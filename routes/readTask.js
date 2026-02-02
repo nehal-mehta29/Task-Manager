@@ -4,12 +4,27 @@ const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
 
-//To GET all tasks
+//To GET all tasks with filtering, pagination and sorting 
 router.get("/", async (req, res) => {
     try {
-        const tasks = await Task.find();
+        const {completed, title} = req.query;
+        let query = {};
+
+        //Filtering by completion status
+        if (completed !== undefined){
+            query.completed = completed === "true";
+        }
+
+        //Search by title
+        if (title){
+            query.title = {$regex: title, $options: "i"};
+        }
+
+        const tasks = await Task.find(query);
+
         res.json(tasks);
     } 
+
     catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
