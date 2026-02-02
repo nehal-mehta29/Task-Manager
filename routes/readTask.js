@@ -7,7 +7,7 @@ const Task = require("../models/Task");
 //To GET all tasks with filtering, pagination and sorting 
 router.get("/", async (req, res) => {
     try {
-        const {completed, title} = req.query;
+        const {completed, title, _page, _limit} = req.query;
         let query = {};
 
         //Filtering by completion status
