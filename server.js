@@ -7,7 +7,7 @@ const app = express();
 dotenv.config();
 
 //MongoDB connection
-require('./db');
+require('./config/db');
 
 app.use(express.json());
 
