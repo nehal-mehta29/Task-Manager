@@ -20,7 +20,21 @@ router.get("/", async (req, res) => {
             query.title = {$regex: title, $options: "i"};
         }
 
-        const tasks = await Task.find(query);
+        //Total count for pagination metadata
+        const total = await Task.countDocuments(query);
+        res.set("X-Total-Count", total);
+
+        let taskQuery = Task.find(query);
+
+        //Pagination
+        if(_page && _limit){
+            const page = parseInt(_page) || 1;
+            const limit = parseInt(_limit) || 10;
+            const skip = (page-1)*limit;
+            taskQuery = taskQuery.skip(skip).limit(limit);
+        }
+
+        const tasks = await taskQuery.exec();
 
         res.json(tasks);
     } 
